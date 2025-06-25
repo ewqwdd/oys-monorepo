@@ -2,7 +2,6 @@ const Meet = require("../models/Meet");
 const Teacher = require("../models/Teacher");
 const generator = require("generate-password");
 const dayjs = require("dayjs");
-const { zoom } = require("../lib/zoom");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const { sendMeetingDetails } = require("../lib/mailer");
