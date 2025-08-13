@@ -68,13 +68,24 @@ router.get("/teachers", async (req, res) => {
           pipeline: [
             {
               $match: {
-                ...(formatParsed.includes("Індивідуальні") &&
-                !formatParsed.includes("Групові")
-                  ? { places: 1 }
-                  : {}),
-                ...(!formatParsed.includes("Індивідуальні") &&
-                formatParsed.includes("Групові")
-                  ? { places: { $gt: 1 } }
+                ...(formatParsed.length > 0
+                  ? (() => {
+                      const hasIndividual =
+                        formatParsed.includes("Індивідуальні");
+                      const hasGroup = formatParsed.includes("Групові");
+
+                      if (hasIndividual && hasGroup) {
+                        // Если выбраны оба формата - показываем все
+                        return {};
+                      } else if (hasIndividual) {
+                        // Только индивидуальные (places = 1)
+                        return { places: 1 };
+                      } else if (hasGroup) {
+                        // Только групповые (places > 1)
+                        return { places: { $gt: 1 } };
+                      }
+                      return {};
+                    })()
                   : {}),
                 ...(timeParsed.length > 0
                   ? {
