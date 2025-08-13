@@ -36,7 +36,6 @@ router.get("/teachers", async (req, res) => {
     const timeParsed = JSON.parse(time);
     const dayParsed = JSON.parse(day);
     const cityParsed = JSON.parse(city);
-    console.log(format);
 
     const filter = {
       user: new mongoose.Types.ObjectId(userId),
@@ -56,84 +55,62 @@ router.get("/teachers", async (req, res) => {
     }
 
     const times = timeParsed.map((t) => queryTime(t));
-    console.log(
-      JSON.stringify({
-        ...(formatParsed.length > 0
-          ? { format: { $elemMatch: { $in: formatParsed } } }
-          : {}),
-        ...(timeParsed.length > 0
-          ? {
-              timeFrom: {
-                $gte: Math.min(...times.map((t) => t.timeFrom)),
-              },
-              timeTo: { $lte: Math.max(...times.map((t) => t.timeTo)) },
-            }
-          : {}),
-        ...(dayParsed.length > 0
-          ? { day: { $in: dayParsed.map((d) => days[d]) } }
-          : {}),
-        $or: [
-          { date: { $exists: false } },
-          { date: { $eq: null } },
-          { date: { $gte: dayjs().add(2, "hour").toDate() } },
-        ],
-      }),
-      null,
-      2
-    );
 
-    const teachers = await Teacher.aggregate([
-      { $match: filter }, // Применение первого фильтра
-      {
-        $lookup: {
-          from: "avaliables", // Имя коллекции для связи
-          localField: "_id", // Локальное поле в коллекции Teacher
-          foreignField: "teacher", // Поле в коллекции Avaliables
-          as: "avaliable", // Имя результирующего массива
-          pipeline: [
-            {
-              $match: {
-                ...(formatParsed.length > 0
-                  ? { format: { $elemMatch: { $in: formatParsed } } }
-                  : {}),
-                ...(timeParsed.length > 0
-                  ? {
-                      timeFrom: {
-                        $gte: Math.min(...times.map((t) => t.timeFrom)),
-                      },
-                      timeTo: { $lte: Math.max(...times.map((t) => t.timeTo)) },
-                    }
-                  : {}),
-                ...(dayParsed.length > 0
-                  ? { day: { $in: dayParsed.map((d) => days[d]) } }
-                  : {}),
-                $or: [
-                  { date: { $exists: false } },
-                  { date: { $eq: null } },
-                  { date: { $gte: dayjs().add(2, "hour").toDate() } },
-                ],
-              },
-            },
-          ],
+const teachers = await Teacher.aggregate([
+  {
+    $match: {
+      ...filter,
+      ...(formatParsed.length > 0
+        ? { format: { $in: formatParsed } }
+        : {}),
+    },
+  },
+  {
+    $lookup: {
+      from: "avaliables",
+      localField: "_id",
+      foreignField: "teacher",
+      as: "avaliable",
+      pipeline: [
+        {
+          $match: {
+            ...(formatParsed.includes("Індивідуальні") && !formatParsed.includes("Групові")
+              ? { places: 1 }
+              : {}),
+            ...(!formatParsed.includes("Індивідуальні") && formatParsed.includes("Групові")
+              ? { places: { $gt: 1 } }
+              : {}),
+            ...(timeParsed.length > 0
+              ? {
+                  timeFrom: { $gte: Math.min(...times.map((t) => t.timeFrom)) },
+                  timeTo: { $lte: Math.max(...times.map((t) => t.timeTo)) },
+                }
+              : {}),
+            ...(dayParsed.length > 0
+              ? { day: { $in: dayParsed.map((d) => days[d]) } }
+              : {}),
+            $or: [
+              { date: { $exists: false } },
+              { date: { $eq: null } },
+              { date: { $gte: dayjs().add(2, "hour").toDate() } },
+            ],
+          },
         },
-      },
-      // {
-      //   $match: {
-      //     "avaliable.0": { $exists: true }, // Убедитесь, что у учителя есть доступные слоты
-      //   },
-      // },
-      { $sort: { order: 1, createdAt: -1 } }, // Сортировка по полю order
-      { $skip: (page - 1) * limit }, // Пропуск документов для пагинации
-      { $limit: Number(limit) }, // Лимит на количество документов
-      {
-        $project: {
-          merchantAccount: 0,
-          merchantSecret: 0,
-          password: 0,
-          refresh_token: 0,
-        },
-      },
-    ]);
+      ],
+    },
+  },
+  { $sort: { order: 1, createdAt: -1 } },
+  { $skip: (page - 1) * limit },
+  { $limit: Number(limit) },
+  {
+    $project: {
+      merchantAccount: 0,
+      merchantSecret: 0,
+      password: 0,
+      refresh_token: 0,
+    },
+  },
+]);
 
     res.json(teachers);
   } catch (error) {
