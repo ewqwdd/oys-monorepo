@@ -36,7 +36,7 @@ router.get("/teachers", async (req, res) => {
     const timeParsed = JSON.parse(time);
     const dayParsed = JSON.parse(day);
     const cityParsed = JSON.parse(city);
-    console.log(format)
+    console.log(format);
 
     const filter = {
       user: new mongoose.Types.ObjectId(userId),
@@ -56,27 +56,31 @@ router.get("/teachers", async (req, res) => {
     }
 
     const times = timeParsed.map((t) => queryTime(t));
-    console.log({
-                ...(formatParsed.length > 0
-                ? { format: { $elemMatch: { $in: formatParsed } } }
-                : {}),
-                ...(timeParsed.length > 0
-                  ? {
-                      timeFrom: {
-                        $gte: Math.min(...times.map((t) => t.timeFrom)),
-                      },
-                      timeTo: { $lte: Math.max(...times.map((t) => t.timeTo)) },
-                    }
-                  : {}),
-                ...(dayParsed.length > 0
-                  ? { day: { $in: dayParsed.map((d) => days[d]) } }
-                  : {}),
-                $or: [
-                  { date: { $exists: false } },
-                  { date: { $eq: null } },
-                  { date: { $gte: dayjs().add(2, "hour").toDate() } },
-                ],
-              });
+    console.log(
+      JSON.stringify({
+        ...(formatParsed.length > 0
+          ? { format: { $elemMatch: { $in: formatParsed } } }
+          : {}),
+        ...(timeParsed.length > 0
+          ? {
+              timeFrom: {
+                $gte: Math.min(...times.map((t) => t.timeFrom)),
+              },
+              timeTo: { $lte: Math.max(...times.map((t) => t.timeTo)) },
+            }
+          : {}),
+        ...(dayParsed.length > 0
+          ? { day: { $in: dayParsed.map((d) => days[d]) } }
+          : {}),
+        $or: [
+          { date: { $exists: false } },
+          { date: { $eq: null } },
+          { date: { $gte: dayjs().add(2, "hour").toDate() } },
+        ],
+      }),
+      null,
+      2
+    );
 
     const teachers = await Teacher.aggregate([
       { $match: filter }, // Применение первого фильтра
@@ -90,8 +94,8 @@ router.get("/teachers", async (req, res) => {
             {
               $match: {
                 ...(formatParsed.length > 0
-                ? { format: { $elemMatch: { $in: formatParsed } } }
-                : {}),
+                  ? { format: { $elemMatch: { $in: formatParsed } } }
+                  : {}),
                 ...(timeParsed.length > 0
                   ? {
                       timeFrom: {
