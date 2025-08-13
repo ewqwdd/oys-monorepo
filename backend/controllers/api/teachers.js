@@ -36,6 +36,7 @@ router.get("/teachers", async (req, res) => {
     const timeParsed = JSON.parse(time);
     const dayParsed = JSON.parse(day);
     const cityParsed = JSON.parse(city);
+    console.log(format)
 
     const filter = {
       user: new mongoose.Types.ObjectId(userId),
@@ -69,8 +70,8 @@ router.get("/teachers", async (req, res) => {
             {
               $match: {
                 ...(formatParsed.length > 0
-                ? { format: { $in: formatParsed } }
-                : {}),
+                ? { format: { $elemMatch: { $in: formatParsed } } }
+                : {})
                 ...(timeParsed.length > 0
                   ? {
                       timeFrom: {
