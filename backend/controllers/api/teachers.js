@@ -71,7 +71,7 @@ router.get("/teachers", async (req, res) => {
               $match: {
                 ...(formatParsed.length > 0
                 ? { format: { $elemMatch: { $in: formatParsed } } }
-                : {})
+                : {}),
                 ...(timeParsed.length > 0
                   ? {
                       timeFrom: {
