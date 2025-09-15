@@ -46,18 +46,21 @@ export default function MeetDetailsModal({ open, onClose, meet }) {
   const onDelete = async (id) => {
     dispatch(commonActions.setLoadig(true));
     try {
-      await api.delete("/crm/meets/" + meet._id + '/clients/' + id);
-      dispatch(commonActions.deleteClientFromMeet({ meetId: meet._id, clientId: id }));
+      await api.delete("/crm/meets/" + meet._id + "/clients/" + id);
+      dispatch(
+        commonActions.deleteClientFromMeet({ meetId: meet._id, clientId: id }),
+      );
       setClients(clients.filter((client) => client._id !== id));
       messageApi.success("Клієнта видалено");
     } catch (err) {
       console.log(err);
+      dispatch(commonActions.logout());
       messageApi.error(err?.response?.data?.message || "Помилка");
     } finally {
       dispatch(commonActions.setLoadig(false));
     }
-  }
-  
+  };
+
   return (
     <>
       {contextHolder}
@@ -92,18 +95,25 @@ export default function MeetDetailsModal({ open, onClose, meet }) {
                   key: "1",
                   label: "Клієнти",
                   children: (
-                    <Flex vertical gap={4}> 
+                    <Flex vertical gap={4}>
                       {clients?.map((client) => (
                         <Flex align="center" gap={16}>
-                          <Button type="primary" variant="filled" shape="circle" danger style={{ padding: 0, minWidth: 24, height: 24 }} onClick={() => onDelete(client._id)}>
+                          <Button
+                            type="primary"
+                            variant="filled"
+                            shape="circle"
+                            danger
+                            style={{ padding: 0, minWidth: 24, height: 24 }}
+                            onClick={() => onDelete(client._id)}
+                          >
                             <DeleteOutlined />
                           </Button>
-                        <p key={client._id}>
-                          <UserOutlined size={12} /> {client.name}{" "}
-                          <Link href={`mailto:${client.email}`}>
-                            {client.email}
-                          </Link>
-                        </p>
+                          <p key={client._id}>
+                            <UserOutlined size={12} /> {client.name}{" "}
+                            <Link href={`mailto:${client.email}`}>
+                              {client.email}
+                            </Link>
+                          </p>
                         </Flex>
                       ))}
                     </Flex>

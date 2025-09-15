@@ -39,6 +39,11 @@ export default function AddMeetModal({ open, onClose }) {
         .then((res) => {
           setAvaliables(res.data);
         })
+        .catch((err) => {
+          if (err.response?.status === 401) {
+            dispatch(commonActions.logout());
+          }
+        })
         .finally(() => setLoading(false));
     }
   }, [teacher]);
@@ -50,17 +55,21 @@ export default function AddMeetModal({ open, onClose }) {
         .map((avaliable) => ({
           value: avaliable._id,
           label: `${formatMinutes(avaliable.timeFrom)} - ${formatMinutes(
-            avaliable.timeTo
+            avaliable.timeTo,
           )}`,
         })),
-    [avaliables, date]
+    [avaliables, date],
   );
 
   const days = avaliables.map((avaliable) => avaliable.day);
   const dates = avaliables.map((avaliable) => avaliable.date);
 
   const disabledDate = (current) => {
-    return current && !days.includes(current?.toDate()?.getDay() - 1) && !dates.find(e => dayjs(current).isSame(e, "day"));
+    return (
+      current &&
+      !days.includes(current?.toDate()?.getDay() - 1) &&
+      !dates.find((e) => dayjs(current).isSame(e, "day"))
+    );
   };
 
   const addNewMeet = () => {
@@ -81,6 +90,9 @@ export default function AddMeetModal({ open, onClose }) {
         onClose();
       })
       .catch((err) => {
+        if (err.response?.status === 401) {
+          dispatch(commonActions.logout());
+        }
         messageApi.error(err.response?.data?.message || "Помилка");
       });
   };

@@ -9,12 +9,12 @@ import Photos from "../pages/Photos/Photos";
 export default function Router() {
   return (
     <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/teachers" element={<Teachers />} />
-        <Route path="/meets" element={<Meets />} />
-        <Route path="/clients" element={<Clients />} />
-        <Route path="/photos" element={<Photos />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/teachers" element={<Teachers />} />
+      <Route path="/meets" element={<Meets />} />
+      <Route path="/clients" element={<Clients />} />
+      <Route path="/photos" element={<Photos />} />
     </Routes>
-  )
+  );
 }

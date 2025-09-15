@@ -30,7 +30,14 @@ export default function AddClient({ onSubmit, onDelete, initialValues }) {
       <Form.Item
         label="Пошта"
         name="email"
-        rules={[{ required: true, message: "Виберіть пошту", type: "email", pattern: /^\S+@\S+\.\S+$/ }]}
+        rules={[
+          {
+            required: true,
+            message: "Виберіть пошту",
+            type: "email",
+            pattern: /^\S+@\S+\.\S+$/,
+          },
+        ]}
       >
         <Input placeholder="Введіть пошту" />
       </Form.Item>
@@ -52,7 +59,7 @@ export default function AddClient({ onSubmit, onDelete, initialValues }) {
       <Row>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            {onDelete ? 'Зберегти' : 'Підтвердити'}
+            {onDelete ? "Зберегти" : "Підтвердити"}
           </Button>
         </Form.Item>
         {onDelete && (

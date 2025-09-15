@@ -12,18 +12,23 @@ export default function ApiKey() {
   };
   return (
     <>
-    {contextHolder}
-    <Flex gap={8} vertical>
-      <Flex gap={4} align="center">
-        <Input disabled type={show ? 'text' : 'password'} value={apiKey} style={{ maxWidth: 400 }} />
-        <Button type="dashed"onClick={() => setShow(!show)}>
-          {show ? 'Сховати' : 'Показати'}
+      {contextHolder}
+      <Flex gap={8} vertical>
+        <Flex gap={4} align="center">
+          <Input
+            disabled
+            type={show ? "text" : "password"}
+            value={apiKey}
+            style={{ maxWidth: 400 }}
+          />
+          <Button type="dashed" onClick={() => setShow(!show)}>
+            {show ? "Сховати" : "Показати"}
+          </Button>
+        </Flex>
+        <Button type="primary" onClick={copy} style={{ alignSelf: "start" }}>
+          Копіювати
         </Button>
       </Flex>
-      <Button type="primary" onClick={copy} style={{alignSelf: 'start'}} >
-        Копіювати
-      </Button>
-    </Flex>
     </>
   );
 }

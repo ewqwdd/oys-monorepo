@@ -27,6 +27,9 @@ export default function LoginForm() {
           });
       })
       .catch((err) => {
+        if (err.response?.status === 401) {
+          dispatch(commonActions.logout());
+        }
         dispatch(commonActions.setLoadig(false));
         console.log(err);
       });
@@ -66,7 +69,11 @@ export default function LoginForm() {
         <Input.Password />
       </Form.Item>
 
-      <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
+      <Form.Item
+        name="remember"
+        valuePropName="checked"
+        wrapperCol={{ offset: 8, span: 16 }}
+      >
         <Checkbox>Remember me</Checkbox>
       </Form.Item>
 

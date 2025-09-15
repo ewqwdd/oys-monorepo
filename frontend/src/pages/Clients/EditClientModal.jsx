@@ -20,6 +20,9 @@ export default function EditClientModal({ client, onClose }) {
         onClose();
       })
       .catch((err) => {
+        if (err.response?.status === 401) {
+          dispatch(commonActions.logout());
+        }
         messageApi.error(err?.response?.data?.message || "Помилка");
         console.log(err);
       })
@@ -38,6 +41,9 @@ export default function EditClientModal({ client, onClose }) {
         onClose();
       })
       .catch((err) => {
+        if (err.response?.status === 401) {
+          dispatch(commonActions.logout());
+        }
         messageApi.error(err?.response?.data?.message || "Помилка");
         console.log(err);
       })

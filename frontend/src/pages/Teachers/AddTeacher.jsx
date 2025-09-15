@@ -4,20 +4,26 @@ import { commonActions } from "../../store/commonReducer";
 import { api } from "../../lib/api";
 
 export default function AddTeacher({ isModalOpen, setIsModalOpen }) {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const onFinish = (values) => {
-        dispatch(commonActions.setLoadig(true));
-        api.post("/crm/teachers", values).then(({data}) => {
-            dispatch(commonActions.setLoadig(false));
-            dispatch(commonActions.addTeacher(data));
-            setIsModalOpen(false);
-        }).catch((err) => {
-            dispatch(commonActions.setLoadig(false));
-            console.log(err);
-        });
+  const onFinish = (values) => {
+    dispatch(commonActions.setLoadig(true));
+    api
+      .post("/crm/teachers", values)
+      .then(({ data }) => {
+        dispatch(commonActions.setLoadig(false));
+        dispatch(commonActions.addTeacher(data));
         setIsModalOpen(false);
-    };
+      })
+      .catch((err) => {
+        if (err.response?.status === 401) {
+          dispatch(commonActions.logout());
+        }
+        dispatch(commonActions.setLoadig(false));
+        console.log(err);
+      });
+    setIsModalOpen(false);
+  };
 
   return (
     <Modal
@@ -36,7 +42,11 @@ export default function AddTeacher({ isModalOpen, setIsModalOpen }) {
         autoComplete="off"
         style={{ paddingTop: "20px" }}
       >
-        <Form.Item label="Name" name="name" rules={[{ required: true, message: "Name обов`язкове поле" }]}>
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: "Name обов`язкове поле" }]}
+        >
           <Input />
         </Form.Item>
         <Form.Item

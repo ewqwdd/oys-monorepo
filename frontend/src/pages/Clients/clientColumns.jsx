@@ -8,8 +8,8 @@ export const clientColumns = (setClient, selected, setSelected) => [
     key: "name",
     render: (record) => (
       <Flex gap={24}>
-        <Checkbox checked={selected.find(e => e === record._id)} />
-      <Button variant="outlined">{record.name ?? "Не вказано"}</Button>
+        <Checkbox checked={selected.find((e) => e === record._id)} />
+        <Button variant="outlined">{record.name ?? "Не вказано"}</Button>
       </Flex>
     ),
   },
@@ -29,12 +29,15 @@ export const clientColumns = (setClient, selected, setSelected) => [
     title: "Дії",
     key: "actions",
     render: (record) => (
-        <Button type="primary" onClick={(e) => {
-          e.stopPropagation()
-          setClient(record)
-          }}>
-          Редагувати
-        </Button>
+      <Button
+        type="primary"
+        onClick={(e) => {
+          e.stopPropagation();
+          setClient(record);
+        }}
+      >
+        Редагувати
+      </Button>
     ),
   },
 ];

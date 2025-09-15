@@ -29,15 +29,18 @@ api.interceptors.response.use(
     const refresh_token = localStorage.getItem("refresh_token");
     const role = store.getState().common.user?.role;
     if (refresh_token) {
-      const { data } = await axios.post(import.meta.env.VITE_API + "/crm/refresh", {
-        refresh_token,
-        role,
-      });
+      const { data } = await axios.post(
+        import.meta.env.VITE_API + "/crm/refresh",
+        {
+          refresh_token,
+          role,
+        },
+      );
       localStorage.setItem("access_token", data.access_token);
 
       originalRequest.headers.Authorization = `Bearer ${data.access_token}`;
       return axios(originalRequest);
     }
     throw error;
-  }
+  },
 );

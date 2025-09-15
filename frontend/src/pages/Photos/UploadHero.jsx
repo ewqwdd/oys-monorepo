@@ -29,6 +29,9 @@ export default function UploadHero({ setLoading }) {
         dispatch(commonActions.appendPhoto(data));
       })
       .catch((e) => {
+        if (e.response?.status === 401) {
+          dispatch(commonActions.logout());
+        }
         messageApi.error(e.response.data.message);
         console.error(e);
       })

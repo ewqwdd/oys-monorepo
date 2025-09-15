@@ -23,6 +23,9 @@ function App() {
       .then((res) => {
         dispatch(commonActions.setUser(res.data));
       })
+      .catch(() => {
+        dispatch(commonActions.logout());
+      })
       .finally(() => {
         dispatch(commonActions.setMounted(true));
         dispatch(commonActions.setLoadig(false));

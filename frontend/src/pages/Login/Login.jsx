@@ -5,12 +5,12 @@ import { useState } from "react";
 import LoginForm from "./LoginForm";
 
 export default function Login() {
-    const [tab, setTab] = useState('login');
+  const [tab, setTab] = useState("login");
 
-    const onTypeClick = ({ key }) => {
-        setTab(key);
-    };
-  
+  const onTypeClick = ({ key }) => {
+    setTab(key);
+  };
+
   return (
     <div className="auth_page default_page">
       <div
@@ -36,7 +36,6 @@ export default function Login() {
         </Menu>
         {tab === "login" && <LoginForm />}
         {tab === "register" && <RegisterForm />}
-        
       </div>
     </div>
   );

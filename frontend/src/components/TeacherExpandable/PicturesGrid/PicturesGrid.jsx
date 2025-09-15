@@ -69,7 +69,7 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
 
     const isFree = allAvaliable.find(
       (avaliable) =>
-        avaliable.x === picture.x2 + 1 && avaliable.y === picture.y2
+        avaliable.x === picture.x2 + 1 && avaliable.y === picture.y2,
     );
     if (!isFree) return;
     setPictures(
@@ -78,7 +78,7 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
           return { ...p, x2: p.x2 + 1 };
         }
         return p;
-      })
+      }),
     );
   };
 
@@ -86,7 +86,8 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
     if (picture.x2 === 0) return;
     const allAvaliable = findAllAvaliable(pictures);
     const isFree = allAvaliable.find(
-      (avaliable) => avaliable.x === picture.x - 1 && avaliable.y === picture.y2
+      (avaliable) =>
+        avaliable.x === picture.x - 1 && avaliable.y === picture.y2,
     );
     if (!isFree) return;
     setPictures(
@@ -95,7 +96,7 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
           return { ...p, x: p.x - 1 };
         }
         return p;
-      })
+      }),
     );
   };
 
@@ -104,7 +105,7 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
     const allAvaliable = findAllAvaliable(pictures);
     const isFree = allAvaliable.find(
       (avaliable) =>
-        avaliable.y === picture.y2 + 1 && avaliable.x === picture.x2
+        avaliable.y === picture.y2 + 1 && avaliable.x === picture.x2,
     );
     if (!isFree) return;
     setPictures(
@@ -113,7 +114,7 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
           return { ...p, y2: p.y2 + 1 };
         }
         return p;
-      })
+      }),
     );
   };
 
@@ -121,7 +122,8 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
     if (picture.y2 === 0) return;
     const allAvaliable = findAllAvaliable(pictures);
     const isFree = allAvaliable.find(
-      (avaliable) => avaliable.y === picture.y - 1 && avaliable.x === picture.x2
+      (avaliable) =>
+        avaliable.y === picture.y - 1 && avaliable.x === picture.x2,
     );
     if (!isFree) return;
     setPictures(
@@ -130,7 +132,7 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
           return { ...p, y: p.y - 1 };
         }
         return p;
-      })
+      }),
     );
   };
 
@@ -142,7 +144,7 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
           return { ...p, x2: p.x2 - 1 };
         }
         return p;
-      })
+      }),
     );
   };
 
@@ -154,7 +156,7 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
           return { ...p, x: p.x + 1 };
         }
         return p;
-      })
+      }),
     );
   };
 
@@ -166,7 +168,7 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
           return { ...p, y2: p.y2 - 1 };
         }
         return p;
-      })
+      }),
     );
   };
 
@@ -178,7 +180,7 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
           return { ...p, y: p.y + 1 };
         }
         return p;
-      })
+      }),
     );
   };
 
@@ -209,7 +211,7 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
           return { ...p, loading: true };
         }
         return p;
-      })
+      }),
     );
     const formData = new FormData();
     formData.append("image", file);
@@ -231,7 +233,7 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
               };
             }
             return p;
-          })
+          }),
         );
       })
       .catch((error) => {
@@ -243,7 +245,7 @@ export default function PicturesGrid({ _id, pictures, setPictures }) {
               return { ...p, loading: false };
             }
             return p;
-          })
+          }),
         );
       });
   };

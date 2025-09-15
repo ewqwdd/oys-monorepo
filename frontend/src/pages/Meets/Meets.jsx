@@ -1,4 +1,14 @@
-import { Button, Col, DatePicker, Flex, Row, Spin, Switch, Table, Typography } from "antd";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Flex,
+  Row,
+  Spin,
+  Switch,
+  Table,
+  Typography,
+} from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "../../lib/api";
@@ -35,7 +45,8 @@ export default function Meets() {
       key: "plan",
       render: (plan) => (
         <Button variant="outlined">
-          {formatMinutes(plan?.timeFrom ?? 0)} - {formatMinutes(plan?.timeTo ?? 0)}
+          {formatMinutes(plan?.timeFrom ?? 0)} -{" "}
+          {formatMinutes(plan?.timeTo ?? 0)}
         </Button>
       ),
     },
@@ -77,18 +88,30 @@ export default function Meets() {
     api
       .get("/crm/meets")
       .then(({ data }) => {
-        dispatch(commonActions.setMeets(data.sort((a, b) => a.plan?.timeFrom - b.plan?.timeFrom)));
+        dispatch(
+          commonActions.setMeets(
+            data.sort((a, b) => a.plan?.timeFrom - b.plan?.timeFrom),
+          ),
+        );
       })
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        if (err.response?.status === 401) {
+          dispatch(commonActions.logout());
+        }
+      })
       .finally(() => setLoading(false));
   }, [meets]);
 
-  const filteredMeets = meets?.filter((meet) => {
-    if (!value) return true;
-    const isBefore = !value[1] || dayjs(meet.date).isBefore(value[1].add(1, "day"));
-    const isAfter = !value[0] || dayjs(meet.date).isAfter(value[0].subtract(1, "day"));
-    return isAfter && isBefore;
-  }).sort((a, b) => dayjs(a.date).isAfter(b.date) ? -1 : 1);
+  const filteredMeets = meets
+    ?.filter((meet) => {
+      if (!value) return true;
+      const isBefore =
+        !value[1] || dayjs(meet.date).isBefore(value[1].add(1, "day"));
+      const isAfter =
+        !value[0] || dayjs(meet.date).isAfter(value[0].subtract(1, "day"));
+      return isAfter && isBefore;
+    })
+    .sort((a, b) => (dayjs(a.date).isAfter(b.date) ? -1 : 1));
 
   return (
     <div className="default_page">
@@ -102,22 +125,31 @@ export default function Meets() {
         Зустрічі
       </Title>
       <Spin spinning={loading}>
-      <Flex justify="space-between">
-        <RangePicker
-          format={dateFormat}
-          value={value}
-          onChange={(v) => setValue(v)}
-          style={{ width: "50%" }}
-        />
-        <Button type="primary" onClick={() => setMeetModal(true)}>
-          Додати
-        </Button>
+        <Flex justify="space-between">
+          <RangePicker
+            format={dateFormat}
+            value={value}
+            onChange={(v) => setValue(v)}
+            style={{ width: "50%" }}
+          />
+          <Button type="primary" onClick={() => setMeetModal(true)}>
+            Додати
+          </Button>
         </Flex>
-        <Table pagination={{
-          pageSize: 10
-        }} dataSource={filteredMeets} columns={columns} style={{ marginTop: 24 }} />
+        <Table
+          pagination={{
+            pageSize: 10,
+          }}
+          dataSource={filteredMeets}
+          columns={columns}
+          style={{ marginTop: 24 }}
+        />
       </Spin>
-      <MeetDetailsModal meet={currentMeet} open={!!currentMeet} onClose={onClose} />
+      <MeetDetailsModal
+        meet={currentMeet}
+        open={!!currentMeet}
+        onClose={onClose}
+      />
       <AddMeetModal open={meetModal} onClose={() => setMeetModal(false)} />
     </div>
   );

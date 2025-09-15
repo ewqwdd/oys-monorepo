@@ -15,18 +15,18 @@ export default function Teachers() {
   const teachers = useSelector((state) => state.common?.teachers);
   const dispatch = useDispatch();
 
-  const changeOrder = (order, id) => api
-  .post(`/crm/teachers/${id}/order`, { order })
-  .then(({ data }) => {
-    dispatch(commonActions.editTeacher(data));
-  })
-  .catch((e) => {
-    toast.error(e.response.data.message);
-    console.error(e);
-  });
+  const changeOrder = (order, id) =>
+    api
+      .post(`/crm/teachers/${id}/order`, { order })
+      .then(({ data }) => {
+        dispatch(commonActions.editTeacher(data));
+      })
+      .catch((e) => {
+        toast.error(e.response.data.message);
+        console.error(e);
+      });
 
   const debouncedFetchOrder = useCallback(debounce(changeOrder, 500), []);
-
 
   const columns = [
     {
@@ -68,6 +68,9 @@ export default function Teachers() {
                 dispatch(commonActions.editTeacher(data));
               })
               .catch((e) => {
+                if (e.response?.status === 401) {
+                  dispatch(commonActions.logout());
+                }
                 toast.error(e.response.data.message);
                 console.error(e);
               });
@@ -83,11 +86,16 @@ export default function Teachers() {
           checked={record.sliderVisible}
           onChange={(e) => {
             api
-              .post(`/crm/teachers/${record._id}/sliderPublish`, { published: e })
+              .post(`/crm/teachers/${record._id}/sliderPublish`, {
+                published: e,
+              })
               .then(({ data }) => {
                 dispatch(commonActions.editTeacher(data));
               })
               .catch((e) => {
+                if (e.response?.status === 401) {
+                  dispatch(commonActions.logout());
+                }
                 toast.error(e.response.data.message);
                 console.error(e);
               });
@@ -103,11 +111,16 @@ export default function Teachers() {
           checked={record.beginnerPublished}
           onChange={(e) => {
             api
-              .post(`/crm/teachers/${record._id}/beginnerPublished`, { published: e })
+              .post(`/crm/teachers/${record._id}/beginnerPublished`, {
+                published: e,
+              })
               .then(({ data }) => {
                 dispatch(commonActions.editTeacher(data));
               })
               .catch((e) => {
+                if (e.response?.status === 401) {
+                  dispatch(commonActions.logout());
+                }
                 toast.error(e.response.data.message);
                 console.error(e);
               });
@@ -120,14 +133,13 @@ export default function Teachers() {
       key: "order",
       render: (record) => (
         <InputNumber
-        defaultValue={record.order}
+          defaultValue={record.order}
           onChange={(v) => {
             debouncedFetchOrder(parseInt(v), record._id);
-          }
-          }
+          }}
         />
       ),
-    }
+    },
   ];
 
   return (
@@ -153,7 +165,9 @@ export default function Teachers() {
       </Button>
       <Table
         columns={columns}
-        dataSource={[...teachers].sort((a, b) => (a?.order ?? 999) - (b?.order ?? 999))}
+        dataSource={[...teachers].sort(
+          (a, b) => (a?.order ?? 999) - (b?.order ?? 999),
+        )}
         style={{ marginTop: 24 }}
         rowKey={(record) => record._id}
         expandable={{

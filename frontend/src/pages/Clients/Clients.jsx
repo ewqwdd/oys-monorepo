@@ -15,11 +15,14 @@ export default function Clients() {
   const [selected, setSelected] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
 
-
   const filteredClients = useMemo(() => {
-    return search.length > 0 ? clients.filter((client) =>
-      client.name?.toLowerCase().includes(search.toLowerCase()) || client.email?.toLowerCase().includes(search.toLowerCase())
-    ) : clients;
+    return search.length > 0
+      ? clients.filter(
+          (client) =>
+            client.name?.toLowerCase().includes(search.toLowerCase()) ||
+            client.email?.toLowerCase().includes(search.toLowerCase()),
+        )
+      : clients;
   }, [clients, search]);
 
   return (
@@ -34,13 +37,23 @@ export default function Clients() {
       >
         Клієнти
       </Title>
-      <Tooltip search={search} setSearch={setSearch} selected={selected} setSelected={setSelected} setOpen={setOpen} messageApi={messageApi} />
+      <Tooltip
+        search={search}
+        setSearch={setSearch}
+        selected={selected}
+        setSelected={setSelected}
+        setOpen={setOpen}
+        messageApi={messageApi}
+      />
       <Table
         dataSource={filteredClients}
         columns={clientColumns(setCurrentClient, selected, setSelected)}
         style={{ marginTop: 24 }}
         onRow={(record) => ({
-          onClick: () => selected.includes(record._id) ? setSelected(selected.filter(e => e !== record._id)) : setSelected([...selected, record._id])
+          onClick: () =>
+            selected.includes(record._id)
+              ? setSelected(selected.filter((e) => e !== record._id))
+              : setSelected([...selected, record._id]),
         })}
       />
       <AddClientModal open={open} onClose={() => setOpen(false)} />

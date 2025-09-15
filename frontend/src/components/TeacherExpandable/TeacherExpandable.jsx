@@ -44,10 +44,17 @@ export default function TeacherExpandable({ record, isAdmin = true }) {
       .get("/crm/avaliable", { params: { teacherId: record._id } })
       .then(({ data }) => {
         dispatch(
-          commonActions.setAvaliable({ teacherId: record._id, avaliable: data })
+          commonActions.setAvaliable({
+            teacherId: record._id,
+            avaliable: data,
+          }),
         );
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        if (err.response?.status === 401) {
+          dispatch(commonActions.logout());
+        }
+      })
       .finally(() => setIsLoading(false));
   }, [record._id]);
 
@@ -75,7 +82,11 @@ export default function TeacherExpandable({ record, isAdmin = true }) {
         setPictures(data.pictures);
         setIsEditing(false);
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        if (err.response?.status === 401) {
+          dispatch(commonActions.logout());
+        }
+      })
       .finally(() => setIsLoading(false));
   };
 
@@ -86,7 +97,11 @@ export default function TeacherExpandable({ record, isAdmin = true }) {
       .then(() => {
         dispatch(commonActions.deleteTeacher(record._id));
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        if (err.response?.status === 401) {
+          dispatch(commonActions.logout());
+        }
+      })
       .finally(() => setIsLoading(false));
   };
 
@@ -255,7 +270,7 @@ export default function TeacherExpandable({ record, isAdmin = true }) {
                   <Text style={{ textAlign: "center" }}>{label}</Text>
                   {record.avaliable
                     .filter(
-                      (avaliable) => avaliable.day === value && !avaliable.date
+                      (avaliable) => avaliable.day === value && !avaliable.date,
                     )
                     .sort((a, b) => a.timeFrom - b.timeFrom)
                     .map((avaliable) => (

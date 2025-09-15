@@ -7,7 +7,7 @@ const { Title } = Typography;
 
 export default function Home() {
   const user = useSelector((state) => state.common.user);
-  const isAdmin = user?.role === 'user';
+  const isAdmin = user?.role === "user";
   if (!user) return null; // Handle case where user is not defined
   return (
     <div className="default_page">
@@ -20,13 +20,17 @@ export default function Home() {
       >
         Hello, {isAdmin ? user.username : user.name}
       </Title>
-      {isAdmin ? <Row justify="space-evenly" style={{ marginTop: 24 }}>
-        <Col span={9}>
-          <Card title="API Key">
-            <ApiKey />
-          </Card>
-        </Col>
-      </Row> : <TeacherHome  />}
+      {isAdmin ? (
+        <Row justify="space-evenly" style={{ marginTop: 24 }}>
+          <Col span={9}>
+            <Card title="API Key">
+              <ApiKey />
+            </Card>
+          </Col>
+        </Row>
+      ) : (
+        <TeacherHome />
+      )}
     </div>
   );
 }

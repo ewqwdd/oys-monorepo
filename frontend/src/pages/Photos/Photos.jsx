@@ -13,13 +13,20 @@ export default function Photos() {
 
   const deletePhoto = (key) => {
     setIsLoading(true);
-    api.delete('/crm/photos', {
-        data: { key }
-    }).then(() => {
+    api
+      .delete("/crm/photos", {
+        data: { key },
+      })
+      .then(() => {
         dispatch(commonActions.deletePhoto(key));
-        }).catch((err) => console.log(err))
-        .finally(() => setIsLoading(false));
-    };
+      })
+      .catch((err) => {
+        if (err.response?.status === 401) {
+          dispatch(commonActions.logout());
+        }
+      })
+      .finally(() => setIsLoading(false));
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -28,7 +35,11 @@ export default function Photos() {
       .then(({ data }) => {
         dispatch(commonActions.setPhotos(data));
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        if (err.response?.status === 401) {
+          dispatch(commonActions.logout());
+        }
+      })
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -37,30 +48,41 @@ export default function Photos() {
       <Spin spinning={isLoading}>
         <h1>Photos</h1>
         <Row gutter={[8, 8]}>
-        {photos.map((photo) => (
-            <Col span={8} key={photo} style={{ position: 'relative' }}>
-                <Button
+          {photos.map((photo) => (
+            <Col span={8} key={photo} style={{ position: "relative" }}>
+              <Button
                 danger
                 style={{
-                    padding: 0,
-                    position: 'absolute',
-                    top: 12,
-                    right: 12,
-                    height: 32,
-                    width: 32,
+                  padding: 0,
+                  position: "absolute",
+                  top: 12,
+                  right: 12,
+                  height: 32,
+                  width: 32,
                 }}
                 onClick={() => deletePhoto(photo.key)}
-                >
-                <DeleteOutlined style={{
+              >
+                <DeleteOutlined
+                  style={{
                     fontSize: 18,
-                }} />
-                </Button>
-          <img src={photo.url} style={{maxHeight: 320, maxWidth: '100%', height: '100%', objectFit: 'cover'}} alt={photo} />
+                  }}
+                />
+              </Button>
+              <img
+                src={photo.url}
+                style={{
+                  maxHeight: 320,
+                  maxWidth: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+                alt={photo}
+              />
+            </Col>
+          ))}
+          <Col span={8}>
+            <UploadHero setLoading={setIsLoading} />
           </Col>
-        ))}
-        <Col span={8}>
-        <UploadHero setLoading={setIsLoading} />
-        </Col>
         </Row>
       </Spin>
     </div>
