@@ -116,7 +116,7 @@ router.delete("/avaliable/:_id", combinedMiddleware, async (req, res) => {
     }
 
     if (req.user.role === "teacher") {
-      if (req.user.id !== teacher.teacher) {
+      if (req.user.id !== String(avaliable.teacher)) {
         return res.status(403).json({ message: "Нет доступа" });
       }
     }
