@@ -134,7 +134,7 @@ router.post("/refresh", async (req, res) => {
     res.json({ access_token });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Ошибка сервера" });
+    res.status(401).send({ message: "Ошибка сервера" });
   }
 });
 
