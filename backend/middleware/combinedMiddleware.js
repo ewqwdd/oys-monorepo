@@ -11,6 +11,9 @@ module.exports = (req, res, next) => {
     if (!decoded) {
         decoded = jwt.decode(token, process.env.JWT_USER_SECRET);
     }
+    if (!decoded) {
+        return res.status(401).send('Не авторизован');
+    }
     req.user = decoded;
     next();
     } catch (error) {

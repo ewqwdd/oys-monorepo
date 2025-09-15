@@ -67,7 +67,13 @@ const commonSlice = createSlice({
       Object.assign(avaliable, action.payload.avaliable);
     },
     deleteAvalialbe: (state, action) => {
-      const teacher = state.teachers.find(
+      if (state.user?._id === action.payload.teacherId) {
+        state.user.avaliable = state.user.avaliable.filter(
+          (avaliable) => avaliable._id !== action.payload.avaliableId,
+        );
+        return;
+      }
+      const teacher = state.teachers?.find(
         (teacher) => teacher._id === action.payload.teacherId,
       );
       teacher.avaliable = teacher.avaliable.filter(

@@ -73,7 +73,7 @@ export default function TeacherEditAvaliableModal({
           dispatch(commonActions.logout());
         }
         messageApi.error(err?.response?.data?.message || "Помилка");
-        console.log(err);
+        console.debug(err);
       });
   };
 
