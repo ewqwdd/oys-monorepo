@@ -14,6 +14,7 @@ module.exports = (req, res, next) => {
     if (!decoded) {
         return res.status(401).send('Не авторизован');
     }
+    console.log(decoded);
     req.user = decoded;
     next();
     } catch (error) {
