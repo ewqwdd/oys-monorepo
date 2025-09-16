@@ -60,7 +60,7 @@ router.post("/meets", async (req, res) => {
         day = 6;
       }
 
-      console.log(day, planExists.day, planExists.date, dateUTC)
+      console.log(!Number.isInteger(planExists.day), day !== planExists.day, planExists.day, day)
   
       if ((!Number.isInteger(planExists.day) || day !== planExists.day) && (!planExists.date || !dateUTC.isSame(planExists.date, "day"))) {
         return res.status(400).send("Не вірний день");
